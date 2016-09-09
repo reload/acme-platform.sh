@@ -1,0 +1,5 @@
+#!/bin/sh
+
+TOKEN_FILE=$(mktemp -p /opt)
+echo "${PLATFORMSH_API_TOKEN}" > "${TOKEN_FILE}"
+/usr/bin/ruby /opt/yamledit.rb -f /root/.platformsh/config.yaml -n -k api,token_file -v "${TOKEN_FILE}" --force
