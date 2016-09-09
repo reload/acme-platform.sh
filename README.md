@@ -42,3 +42,6 @@ Optional configuration via environment variables:
 ```
 SERVER=https://acme-staging.api.letsencrypt.org/directory
 ```
+
+The container will store the certificates in `/data` so you should
+mount a volume to `/data`.
