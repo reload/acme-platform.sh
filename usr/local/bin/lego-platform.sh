@@ -4,6 +4,14 @@ set +x
 
 . /etc/container_environment.sh
 
+TMPDIR=$(mktemp -d)
+
+cleanup() {
+    rm -rf "${TMPDIR}"
+}
+
+trap cleanup EXIT
+
 IFS=' ' read -r -a domains <<< "${DOMAINS}"
 LEGOPATH=/data
 export HOME=/root
@@ -62,9 +70,12 @@ upload_certificates () {
 
 upload_certificate () {
     local domain=$1
-    local cert=${LEGOPATH}/certificates/${domain}.crt
+
+    csplit -f ${TMPDIR}/cert- ${LEGOPATH}/certificates/${domain}.crt '/-----BEGIN CERTIFICATE-----/' '{*}'
+
+    local cert=${TMPDIR}/cert-01
     local key=${LEGOPATH}/certificates/${domain}.key
-    local chain=${LEGOPATH}/certificates/${domain}.crt
+    local chain=${TMPDIR}/cert-02
     platform domain:update --yes --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
 }
 
