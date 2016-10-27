@@ -6,7 +6,7 @@ RUN set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y -q golang-go git php-cli php-curl ruby && \
     GOPATH=/usr/local go get -u github.com/xenolf/lego && \
     curl -sS https://platform.sh/cli/installer | php && \
-    curl -sS -o /opt/yamledit.rb https://raw.githubusercontent.com/dbrandenburg/yamledit/master/yamledit.rb && \
+    curl -sS -o /opt/yamledit.rb https://raw.githubusercontent.com/dbrandenburg/yamledit/e277715d71ed5bac17e97267577dd612fcc7ee2c/yamledit.rb && \
     DEBIAN_FRONTEND=noninteractive apt-get purge -y -q golang-go && \
     apt-get clean -y -q && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
