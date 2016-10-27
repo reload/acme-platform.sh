@@ -12,7 +12,7 @@ Experimental. YMMV.
 
 Necessary configuration via environment variables, .i.e.:
 
- * `EMAIL=me@example.com` (used for registering with Let's Encrypt)
+ * `ACME_EMAIL=me@example.com` (used for registering with Let's Encrypt)
  * `DOMAINS="example.com www.example.com"` (space separated list --
    must already be added to the project at Platform.sh)
  * `DNS_PROVIDER=dnsimple` (your DNS provider, see below for supported
@@ -39,8 +39,10 @@ You also need to provide environment variables required by the DNS provider chal
 
 Optional configuration via environment variables:
 
-```
-SERVER=https://acme-staging.api.letsencrypt.org/directory
+* `ACME_SERVER=https://acme-staging.api.letsencrypt.org/directory`
+(optional ACME server -- defaults to Let's Encrypts production server)
+* `ACME_DAYS=30` (the number of days left on a certificate to renew
+it. Defaults to 30)
 ```
 
 The container will store the certificates in `/data` so you should

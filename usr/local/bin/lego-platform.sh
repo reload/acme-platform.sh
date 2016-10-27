@@ -15,10 +15,11 @@ trap cleanup EXIT
 IFS=' ' read -r -a domains <<< "${DOMAINS}"
 LEGOPATH=/data
 export HOME=/root
-SERVER=${SERVER:-https://acme-v01.api.letsencrypt.org/directory}
+ACME_SERVER=${ACME_SERVER:-https://acme-v01.api.letsencrypt.org/directory}
+ACME_DAYS=${ACME_DAYS:-30}
 
 verify_preconditions () {
-    [ ! -z "${SERVER}" ] && [ ! -z "${EMAIL}" ] && [ ! -z "${DNS_PROVIDER}" ] && verify_domains_in_platformsh
+    [ ! -z "${ACME_SERVER}" ] && [ ! -z "${ACME_EMAIL}" ] && [ ! -z "${DNS_PROVIDER}" ] && verify_domains_in_platformsh
 }
 
 verify_domains_in_platformsh () {
@@ -53,12 +54,12 @@ domain_exists () {
 
 create_domain () {
     local domain=$1
-    lego --domains=${domain} --server=${SERVER} --email=${EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} run
+    lego --domains=${domain} --server=${ACME_SERVER} --email=${ACME_EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} run
 }
 
 renew_domain () {
     local domain=$1
-    lego --domains=${domain} --server=${SERVER} --email=${EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} renew --days=60
+    lego --domains=${domain} --server=${ACME_SERVER} --email=${ACME_EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} renew --days=${ACME_DAYS}
 }
 
 upload_certificates () {
