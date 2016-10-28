@@ -27,7 +27,7 @@ verify_domains_in_platformsh () {
 
     for i in "${!domains[@]}"
     do
-        platform domain:get --yes --project="${PLATFORMSH_PROJECT_ID}" "${domains[i]}"
+        platform domain:get --no --project="${PLATFORMSH_PROJECT_ID}" "${domains[i]}"
         local err=$?
         status=$((${err}|${status}))
     done
@@ -83,10 +83,10 @@ upload_certificate () {
 
     # We allow the following commands to fail because there might not be a current certificate.
     set -x
-    platform domain:get --project="${PLATFORMSH_PROJECT_ID}" --property=ssl "${domain}" |  shyaml get-value certificate > "${current}"
+    platform domain:get --no --project="${PLATFORMSH_PROJECT_ID}" --property=ssl "${domain}" |  shyaml get-value certificate > "${current}"
 
     if [ "$(openssl x509 -in "${cert}"  -noout -fingerprint)" != "$(openssl x509 -in "${current}"  -noout -fingerprint)" ]; then
-       platform domain:update --yes --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
+       platform domain:update --no --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
     fi
 
     set +x
