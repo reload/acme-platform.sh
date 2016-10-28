@@ -15,10 +15,11 @@ trap cleanup EXIT
 IFS=' ' read -r -a domains <<< "${DOMAINS}"
 LEGOPATH=/data
 export HOME=/root
-SERVER=${SERVER:-https://acme-v01.api.letsencrypt.org/directory}
+ACME_SERVER=${ACME_SERVER:-https://acme-v01.api.letsencrypt.org/directory}
+ACME_DAYS=${ACME_DAYS:-30}
 
 verify_preconditions () {
-    [ ! -z "${SERVER}" ] && [ ! -z "${EMAIL}" ] && [ ! -z "${DNS_PROVIDER}" ] && verify_domains_in_platformsh
+    [ ! -z "${ACME_SERVER}" ] && [ ! -z "${ACME_EMAIL}" ] && [ ! -z "${DNS_PROVIDER}" ] && verify_domains_in_platformsh
 }
 
 verify_domains_in_platformsh () {
@@ -26,7 +27,7 @@ verify_domains_in_platformsh () {
 
     for i in "${!domains[@]}"
     do
-        platform domain:get --yes --project="${PLATFORMSH_PROJECT_ID}" "${domains[i]}"
+        platform domain:get --no --project="${PLATFORMSH_PROJECT_ID}" "${domains[i]}"
         local err=$?
         status=$((${err}|${status}))
     done
@@ -53,12 +54,12 @@ domain_exists () {
 
 create_domain () {
     local domain=$1
-    lego --domains=${domain} --server=${SERVER} --email=${EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} run
+    lego --domains=${domain} --server=${ACME_SERVER} --email=${ACME_EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} run
 }
 
 renew_domain () {
     local domain=$1
-    lego --domains=${domain} --server=${SERVER} --email=${EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} renew --days=60
+    lego --domains=${domain} --server=${ACME_SERVER} --email=${ACME_EMAIL} --accept-tos --path=${LEGOPATH} --dns=${DNS_PROVIDER} renew --days=${ACME_DAYS}
 }
 
 upload_certificates () {
@@ -76,7 +77,19 @@ upload_certificate () {
     local cert=${TMPDIR}/cert-01
     local key=${LEGOPATH}/certificates/${domain}.key
     local chain=${TMPDIR}/cert-02
-    platform domain:update --yes --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
+    local current=${TMPDIR}/current
+
+    # Compare certificate to current certificate at platform.sh. Only upload if they are different.
+
+    # We allow the following commands to fail because there might not be a current certificate.
+    set -x
+    platform domain:get --no --project="${PLATFORMSH_PROJECT_ID}" --property=ssl "${domain}" |  shyaml get-value certificate > "${current}"
+
+    if [ "$(openssl x509 -in "${cert}"  -noout -fingerprint)" != "$(openssl x509 -in "${current}"  -noout -fingerprint)" ]; then
+       platform domain:update --no --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
+    fi
+
+    set +x
 }
 
 verify_preconditions && create_or_renew_domains && upload_certificates

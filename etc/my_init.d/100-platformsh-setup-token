@@ -2,4 +2,8 @@
 
 TOKEN_FILE=$(mktemp -p /opt)
 echo "${PLATFORMSH_API_TOKEN}" > "${TOKEN_FILE}"
+
+# Empty platform cache so a new token will be used.
+rm -rf /root/.platformsh/cache
+
 /usr/bin/ruby /opt/yamledit.rb -f /root/.platformsh/config.yaml -n -k api,token_file -v "${TOKEN_FILE}" --force

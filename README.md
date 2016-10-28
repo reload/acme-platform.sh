@@ -1,18 +1,19 @@
-# Let's Encrypt with DNS challenge on platform.sh
+# ACME (Let's Encrypt) with DNS challenge on platform.sh
 
 [Platform.sh](https://platform.sh) currently doesn't support using
-Let's Encrypt certificates (at least not with domain verification and
-automatic renewal).
+ACME/Let's Encrypt certificates (at least not with domain verification
+and automatic renewal).
 
-This image uses [lego](https://github.com/xenolf/lego) to obtain a
-certificate via Let's Encrypts DNS challenge and uploads the
+This Docker image provides scripting for obtaining certificates via
+ACME/Let's Encrypt and uploading them to Platform.sh using their API.
+
+This Docker image is based on [lego](https://github.com/xenolf/lego)
+to obtain a certificate via ACME DNS challenge and uploads the
 certificate to platform.sh using their commmand line client.
-
-Experimental. YMMV.
 
 Necessary configuration via environment variables, .i.e.:
 
- * `EMAIL=me@example.com` (used for registering with Let's Encrypt)
+ * `ACME_EMAIL=me@example.com` (used for registering with Let's Encrypt)
  * `DOMAINS="example.com www.example.com"` (space separated list --
    must already be added to the project at Platform.sh)
  * `DNS_PROVIDER=dnsimple` (your DNS provider, see below for supported
@@ -39,8 +40,10 @@ You also need to provide environment variables required by the DNS provider chal
 
 Optional configuration via environment variables:
 
-```
-SERVER=https://acme-staging.api.letsencrypt.org/directory
+* `ACME_SERVER=https://acme-staging.api.letsencrypt.org/directory`
+(optional ACME server -- defaults to Let's Encrypts production server)
+* `ACME_DAYS=30` (the number of days left on a certificate to renew
+it. Defaults to 30)
 ```
 
 The container will store the certificates in `/data` so you should
