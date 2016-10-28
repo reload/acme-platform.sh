@@ -1,15 +1,10 @@
 # ACME (Let's Encrypt) with DNS challenge on platform.sh
 
-[Platform.sh](https://platform.sh) currently doesn't support using
-ACME/Let's Encrypt certificates (at least not with domain verification
-and automatic renewal).
+[Platform.sh](https://platform.sh) currently doesn't support using ACME/Let's Encrypt certificates (at least not with domain verification and automatic renewal).
 
-This Docker image provides scripting for obtaining certificates via
-ACME/Let's Encrypt and uploading them to Platform.sh using their API.
+This Docker image provides scripting for obtaining certificates via ACME/Let's Encrypt and uploading them to Platform.sh using their API.
 
-This Docker image is based on [lego](https://github.com/xenolf/lego)
-to obtain a certificate via ACME DNS challenge and uploads the
-certificate to platform.sh using their commmand line client.
+This Docker image is based on [lego](https://github.com/xenolf/lego) to obtain a certificate via ACME DNS challenge and uploads the certificate to platform.sh using their commmand line client.
 
 Necessary configuration via environment variables, .i.e.:
 
@@ -40,10 +35,7 @@ You also need to provide environment variables required by the DNS provider chal
 
 Optional configuration via environment variables:
 
-* `ACME_SERVER=https://acme-staging.api.letsencrypt.org/directory`
-(optional ACME server -- defaults to Let's Encrypts production server)
-* `ACME_DAYS=30` (the number of days left on a certificate to renew
-it. Defaults to 30)
+* `ACME_SERVER=https://acme-staging.api.letsencrypt.org/directory` (optional ACME server -- defaults to Let's Encrypts production server)
+* `ACME_DAYS=30` (the number of days left on a certificate to renew it. Defaults to 30)
 
-The container will store the certificates in `/data` so you should
-mount a volume to `/data`.
+The container will store the certificates in `/data` so you should mount a volume to `/data`.
