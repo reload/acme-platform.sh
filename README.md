@@ -44,7 +44,6 @@ Optional configuration via environment variables:
 (optional ACME server -- defaults to Let's Encrypts production server)
 * `ACME_DAYS=30` (the number of days left on a certificate to renew
 it. Defaults to 30)
-```
 
 The container will store the certificates in `/data` so you should
 mount a volume to `/data`.
