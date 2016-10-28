@@ -1,14 +1,15 @@
-# Let's Encrypt with DNS challenge on platform.sh
+# ACME (Let's Encrypt) with DNS challenge on platform.sh
 
 [Platform.sh](https://platform.sh) currently doesn't support using
-Let's Encrypt certificates (at least not with domain verification and
-automatic renewal).
+ACME/Let's Encrypt certificates (at least not with domain verification
+and automatic renewal).
 
-This image uses [lego](https://github.com/xenolf/lego) to obtain a
-certificate via Let's Encrypts DNS challenge and uploads the
+This Docker image provides scripting for obtaining certificates via
+ACME/Let's Encrypt and uploading them to Platform.sh using their API.
+
+This Docker image is based on [lego](https://github.com/xenolf/lego)
+to obtain a certificate via ACME DNS challenge and uploads the
 certificate to platform.sh using their commmand line client.
-
-Experimental. YMMV.
 
 Necessary configuration via environment variables, .i.e.:
 
