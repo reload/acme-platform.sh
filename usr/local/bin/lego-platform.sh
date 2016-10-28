@@ -77,7 +77,19 @@ upload_certificate () {
     local cert=${TMPDIR}/cert-01
     local key=${LEGOPATH}/certificates/${domain}.key
     local chain=${TMPDIR}/cert-02
-    platform domain:update --yes --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
+    local current=${TMPDIR}/current
+
+    # Compare certificate to current certificate at platform.sh. Only upload if they are different.
+
+    # We allow the following commands to fail because there might not be a current certificate.
+    set -x
+    platform domain:get --project="${PLATFORMSH_PROJECT_ID}" --property=ssl "${domain}" |  shyaml get-value certificate > "${current}"
+
+    if [ "$(openssl x509 -in "${cert}"  -noout -fingerprint)" != "$(openssl x509 -in "${current}"  -noout -fingerprint)" ]; then
+       platform domain:update --yes --cert=${cert} --key=${key} --chain=${chain} --project="${PLATFORMSH_PROJECT_ID}" "${domain}"
+    fi
+
+    set +x
 }
 
 verify_preconditions && create_or_renew_domains && upload_certificates
