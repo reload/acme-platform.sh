@@ -1,5 +1,5 @@
 FROM phusion/baseimage:0.9.19
-MAINTAINER Arne Jørgensen
+MAINTAINER Arne Jørgensen <arne@reload.dk>
 
 RUN set -x && \
     apt-get update && \
