@@ -1,6 +1,8 @@
 # ACME (Let's Encrypt) with DNS challenge on platform.sh
 
-[Platform.sh](https://platform.sh) currently doesn't support using ACME/Let's Encrypt certificates (at least not with domain verification and automatic renewal).
+**NOTICE:** Platform.sh launched builtin support for Let's Encrypt on April 20, 2017. So most likely you won't need this any more. Read more [on Platform.sh's blog](https://platform.sh/blog/free-ssl-certificates-for-every-project-every-environment).
+
+[Platform.sh](https://platform.sh) previously didn't support using ACME/Let's Encrypt certificates (at least not with domain verification and automatic renewal).
 
 This Docker image provides scripting for obtaining certificates via ACME/Let's Encrypt and uploading them to Platform.sh using their API.
 
