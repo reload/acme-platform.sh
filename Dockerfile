@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.19
+FROM phusion/baseimage:latest
 MAINTAINER Arne Jørgensen <arne@reload.dk>
 
 RUN set -x && \
